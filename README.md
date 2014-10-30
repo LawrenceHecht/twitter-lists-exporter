@@ -9,7 +9,7 @@ A command-line tool to export Twitter lists to JSON or HTML.
 git clone https://github.com/viniciuspinto/twitter-lists-exporter.git
 cd twitter-lists-exporter 
 composer install
-mv config.php.default config.php
+cp config.php.default config.php
 ```
 
 ## Configuration
