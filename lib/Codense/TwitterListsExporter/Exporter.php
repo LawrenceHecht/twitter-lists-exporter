@@ -35,7 +35,7 @@ class Exporter
             throw new \Exception("Invalid response: \n\n" . var_export($response, true));
         }
 
-        if (is_a($this->converter, '\Codense\TwitterListsExporter\Converter')) {
+        if (is_a($this->converter, Converter::class)) {
             $this->printStatus('Saving lists...');
             $this->converter->convert($lists);
         }
