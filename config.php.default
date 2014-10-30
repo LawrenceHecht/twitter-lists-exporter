@@ -1,0 +1,33 @@
+<?php
+
+namespace Codense\TwitterListsExporter;
+
+if (!defined('PHP_ENV')) {
+  $env = getenv('PHP_ENV') ?: 'development';
+  define('PHP_ENV', $env);
+}
+
+$loader = require_once __DIR__ . '/vendor/autoload.php';
+$loader->add('Codense', __DIR__ . '/lib');
+
+class Config
+{
+    const OUTPUT_PATH = __DIR__ . '/output/';
+
+    // json or html
+    const FORMAT = 'json';
+
+    // How many users to fetch on each request (max 5000)
+    const USERS_PER_PAGE = 100;
+
+    public static function getTwitter()
+    {
+        return array(
+            'consumer_key'       => '',
+            'consumer_secret'    => '',
+            'oauth_token'        => '',
+            'oauth_token_secret' => ''
+        );
+    }
+
+}

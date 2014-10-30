@@ -1,0 +1,4 @@
+config.php
+vendor/
+output/
+test/temp/
