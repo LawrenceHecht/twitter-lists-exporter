@@ -35,11 +35,12 @@ class ExporterCli
     public function run()
     {
         if ($this->screenName && $this->listType) {
+            $logger = new StdoutLogger();
             $oauthClient = new \TwitterOAuth\TwitterOAuth(Config::getTwitter());
-            $twitterClient = new TwitterClient($oauthClient);
+            $twitterClient = new TwitterClient($oauthClient, $logger);
             $converter = new Converter(Config::FORMAT, $this->outputPath);
 
-            $exporter = new Exporter($twitterClient, $converter, new StdoutLogger());
+            $exporter = new Exporter($twitterClient, $converter, $logger);
             $exporter->exportLists($this->screenName, $this->listType);
         } else {
             $this->logger->error("Cannot run without arguments.\n\n");
