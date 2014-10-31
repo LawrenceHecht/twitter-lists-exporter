@@ -6,13 +6,13 @@ class Exporter
 {
     private $twitterClient;
     private $converter;
-    private $silent;
+    private $logger;
 
-    public function __construct(TwitterClient $twitterClient, Converter $converter = null, $silent = false)
+    public function __construct(TwitterClient $twitterClient, Converter $converter = null, LoggerInterface $logger = null)
     {
         $this->twitterClient = $twitterClient;
         $this->converter     = $converter;
-        $this->silent        = $silent;
+        $this->logger        = $logger ?: new Blackhole();
     }
 
     public function exportLists($screenName, $listType = 'all')
@@ -36,10 +36,10 @@ class Exporter
         }
 
         if (is_a($this->converter, Converter::class)) {
-            $this->printStatus('Saving lists...');
+            $this->logger->info('Saving lists...');
             $this->converter->convert($lists);
         }
-        $this->printStatus("\nNumber of lists exported: " . count($lists) . "\n");
+        $this->logger->info("\nNumber of lists exported: " . count($lists) . "\n");
 
         return $lists;
     }
@@ -74,13 +74,6 @@ class Exporter
             'screen_name' => $user->screen_name,
             'name'        => $user->name
         ];
-    }
-
-    private function printStatus($status)
-    {
-        if (!$this->silent) {
-            echo $status;
-        }
     }
 
 }

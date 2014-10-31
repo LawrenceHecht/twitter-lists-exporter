@@ -5,12 +5,12 @@ namespace Codense\TwitterListsExporter;
 class TwitterClient
 {
     private $client;
-    private $silent;
+    private $logger;
 
-    public function __construct(\TwitterOAuth\TwitterOAuth $oauthClient, $silent = false)
+    public function __construct(\TwitterOAuth\TwitterOAuth $oauthClient, LoggerInterface $logger = null)
     {
         $this->client = $oauthClient;
-        $this->silent = $silent;
+        $this->logger = $logger ?: new Blackhole();
     }
 
     public static function getPath($key)
@@ -31,7 +31,7 @@ class TwitterClient
     public function getLists($listType, array $params)
     {
         $path = self::getPath($listType);
-        $this->printStatus("Fetching lists...\n");
+        $this->logger->info("Fetching lists...\n");
 
         return $this->client->get($path, $params);
     }
@@ -39,16 +39,9 @@ class TwitterClient
     public function getListMembers(array $params)
     {
         $path = self::getPath('members');
-        $this->printStatus("Fetching list members...\n");
+        $this->logger->info("Fetching list members...\n");
 
         return $this->client->get($path, $params);
-    }
-
-    protected function printStatus($status)
-    {
-        if (!$this->silent) {
-            echo $status;
-        }
     }
 
 }

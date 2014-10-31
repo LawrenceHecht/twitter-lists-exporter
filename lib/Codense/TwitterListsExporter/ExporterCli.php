@@ -5,21 +5,21 @@ namespace Codense\TwitterListsExporter;
 class ExporterCli
 {
 
-    public $silent;
+    public $logger;
     public $screenName;
     public $listType;
     public $outputPath;
 
-    public function __construct(array $args, $silent = false)
+    public function __construct(array $args, LoggerInterface $logger = null)
     {
-        $this->silent = $silent;
+        $this->logger = $logger ?: new Blackhole();
         $this->parseArgs($args);
     }
 
     public function parseArgs($args)
     {
         if (count($args) < 2) {
-            $this->printStatus("\nUsage: php {$args[0]} twitter_username [owned | subscribed]\n\n");
+            $this->logger->warning("\nUsage: php {$args[0]} twitter_username [owned | subscribed]\n\n");
         } else {
             $this->screenName = trim($args[1]);
             $this->listType = (!empty($args[2]) ? trim($args[2]) : 'all');
@@ -39,17 +39,10 @@ class ExporterCli
             $twitterClient = new TwitterClient($oauthClient);
             $converter = new Converter(Config::FORMAT, $this->outputPath);
 
-            $exporter = new Exporter($twitterClient, $converter);
+            $exporter = new Exporter($twitterClient, $converter, new StdoutLogger());
             $exporter->exportLists($this->screenName, $this->listType);
         } else {
-            $this->printStatus("Cannot run without arguments.\n\n");
-        }
-    }
-
-    private function printStatus($status)
-    {
-        if (!$this->silent) {
-            echo $status;
+            $this->logger->error("Cannot run without arguments.\n\n");
         }
     }
 

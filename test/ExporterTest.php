@@ -22,7 +22,7 @@ class ExporterTest extends \PHPUnit_Framework_TestCase
         $this->twitterClient->method('getLists')
                       ->willReturn($this->getListsFromApi());
         $this->converter = $this->getMock('\Codense\TwitterListsExporter\Converter', ['convert'], ['json']);
-        $this->exporter = new Exporter($this->twitterClient, $this->converter, true);
+        $this->exporter = new Exporter($this->twitterClient, $this->converter);
     }
 
     public function testExportLists()
@@ -61,7 +61,7 @@ class ExporterTest extends \PHPUnit_Framework_TestCase
                         [$this->equalTo(['list_id' => '283', 'count' => Config::USERS_PER_PAGE, 'cursor' => 222])]
                       );
 
-        $exporter = new Exporter($this->twitterClient, null, true);
+        $exporter = new Exporter($this->twitterClient, null);
         $members = $exporter->exportListMembers('283', -1);
 
         $this->assertEquals(5, count($members));

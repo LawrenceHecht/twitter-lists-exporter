@@ -10,7 +10,7 @@ class ExporterCliTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->cli = new ExporterCli(['task_export.php'], true);
+        $this->cli = new ExporterCli(['task_export.php']);
     }
 
     public function testParseValidArgs()

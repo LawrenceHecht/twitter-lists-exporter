@@ -16,7 +16,7 @@ class TwitterClientTest extends \PHPUnit_Framework_TestCase
         $this->oauth = $this->getMockBuilder('\TwitterOAuth\TwitterOAuth')
                             ->disableOriginalConstructor()
                             ->getMock();
-        $this->client = new TwitterClient($this->oauth, true);
+        $this->client = new TwitterClient($this->oauth);
     }
 
     public function testGetAllLists()
