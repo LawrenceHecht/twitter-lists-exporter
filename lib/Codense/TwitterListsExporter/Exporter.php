@@ -8,7 +8,7 @@ class Exporter
     private $converter;
     private $silent;
 
-    public function __construct($twitterClient, $converter = null, $silent = false)
+    public function __construct(TwitterClient $twitterClient, Converter $converter = null, $silent = false)
     {
         $this->twitterClient = $twitterClient;
         $this->converter     = $converter;

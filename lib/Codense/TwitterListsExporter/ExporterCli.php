@@ -10,7 +10,7 @@ class ExporterCli
     public $listType;
     public $outputPath;
 
-    public function __construct($args, $silent = false)
+    public function __construct(array $args, $silent = false)
     {
         $this->silent = $silent;
         $this->parseArgs($args);

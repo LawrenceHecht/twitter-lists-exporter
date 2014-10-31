@@ -7,7 +7,7 @@ class TwitterClient
     private $client;
     private $silent;
 
-    public function __construct($oauthClient, $silent = false)
+    public function __construct(\TwitterOAuth\TwitterOAuth $oauthClient, $silent = false)
     {
         $this->client = $oauthClient;
         $this->silent = $silent;
@@ -28,7 +28,7 @@ class TwitterClient
         }
     }
 
-    public function getLists($listType, $params)
+    public function getLists($listType, array $params)
     {
         $path = self::getPath($listType);
         $this->printStatus("Fetching lists...\n");
@@ -36,7 +36,7 @@ class TwitterClient
         return $this->client->get($path, $params);
     }
 
-    public function getListMembers($params)
+    public function getListMembers(array $params)
     {
         $path = self::getPath('members');
         $this->printStatus("Fetching list members...\n");

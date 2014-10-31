@@ -3,30 +3,35 @@
 namespace Codense\TwitterListsExport\Test;
 
 use \Codense\TwitterListsExporter\Config;
+use \Codense\TwitterListsExporter\TwitterClient;
 use \Codense\TwitterListsExporter\Exporter;
 use \Codense\TwitterListsExporter\Test\Faker;
 
 class ExporterTest extends \PHPUnit_Framework_TestCase
 {
 
+    protected $twitterClient;
     protected $exporter;
 
     public function setUp()
     {
-        $twitterClient = $this->getMock('TwitterClient', ['getLists', 'getListMembers']);
-        $twitterClient->method('getLists')
+        $oauthClient = $this->getMockBuilder('\TwitterOAuth\TwitterOAuth')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        $this->twitterClient = $this->getMock('\Codense\TwitterListsExporter\TwitterClient', ['getLists', 'getListMembers'], [$oauthClient]);
+        $this->twitterClient->method('getLists')
                       ->willReturn($this->getListsFromApi());
-        $twitterClient->method('getListMembers')
-                      ->will($this->onConsecutiveCalls(
-                        $this->getListMembersFromApi(1),
-                        $this->getListMembersFromApi(2)
-                      ));
         $this->converter = $this->getMock('\Codense\TwitterListsExporter\Converter', ['convert'], ['json']);
-        $this->exporter = new Exporter($twitterClient, $this->converter, true);
+        $this->exporter = new Exporter($this->twitterClient, $this->converter, true);
     }
 
     public function testExportLists()
     {
+        $this->twitterClient->method('getListMembers')
+                      ->will($this->onConsecutiveCalls(
+                        $this->getListMembersFromApi(1),
+                        $this->getListMembersFromApi(2)
+                      ));
         $this->converter->expects($this->once())->method('convert')->with($this->getListsResults());
         $this->assertEquals($this->getListsResults(), $this->exporter->exportLists('alice'));
     }
@@ -44,11 +49,11 @@ class ExporterTest extends \PHPUnit_Framework_TestCase
         $membersPage3 = (object) array(
             'users' => Faker::getListMembersFromApi(1)
         );
-        $twitterClient = $this->getMock('TwitterClient', ['getListMembers']);
-        $twitterClient->method('getListMembers')
+
+        $this->twitterClient->method('getListMembers')
                       ->will($this->onConsecutiveCalls($membersPage1, $membersPage2, $membersPage3));
 
-        $twitterClient->expects($this->exactly(3))
+        $this->twitterClient->expects($this->exactly(3))
                       ->method('getListMembers')
                       ->withConsecutive(
                         [$this->equalTo(['list_id' => '283', 'count' => Config::USERS_PER_PAGE, 'cursor' => -1])],
@@ -56,7 +61,7 @@ class ExporterTest extends \PHPUnit_Framework_TestCase
                         [$this->equalTo(['list_id' => '283', 'count' => Config::USERS_PER_PAGE, 'cursor' => 222])]
                       );
 
-        $exporter = new Exporter($twitterClient, null, true);
+        $exporter = new Exporter($this->twitterClient, null, true);
         $members = $exporter->exportListMembers('283', -1);
 
         $this->assertEquals(5, count($members));

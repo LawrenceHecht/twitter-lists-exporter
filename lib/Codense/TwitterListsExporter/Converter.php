@@ -19,17 +19,17 @@ class Converter
         }
     }
 
-    public function convert($lists)
+    public function convert(array $lists)
     {
         $this->{$this->format}($lists);
     }
 
-    public function json($lists)
+    public function json(array $lists)
     {
         file_put_contents($this->path, json_encode($lists));
     }
 
-    public function html($lists)
+    public function html(array $lists)
     {
         $html = '';
         foreach ($lists as $list) {

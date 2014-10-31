@@ -8,15 +8,20 @@ use \Codense\TwitterListsExporter\TwitterClient;
 class TwitterClientTest extends \PHPUnit_Framework_TestCase
 {
 
+    protected $oauth;
+    protected $client;
+
     public function setUp()
     {
-        $this->twitterOauth = $this->getMock('TwitterOAuth', array('get'));
-        $this->client = new TwitterClient($this->twitterOauth, true);
+        $this->oauth = $this->getMockBuilder('\TwitterOAuth\TwitterOAuth')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        $this->client = new TwitterClient($this->oauth, true);
     }
 
     public function testGetAllLists()
     {
-        $this->twitterOauth->expects($this->once())
+        $this->oauth->expects($this->once())
                            ->method('get')
                            ->with('lists/list', array('p1' => 3));
         $this->client->getLists('all', array('p1' => 3));
@@ -24,7 +29,7 @@ class TwitterClientTest extends \PHPUnit_Framework_TestCase
 
     public function testGetOwnedLists()
     {
-        $this->twitterOauth->expects($this->once())
+        $this->oauth->expects($this->once())
                            ->method('get')
                            ->with('lists/ownerships', array('p1' => 'something', 'p2' => 29));
         $this->client->getLists('owned', array('p1' => 'something', 'p2' => 29));
@@ -32,7 +37,7 @@ class TwitterClientTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSubscribedLists()
     {
-        $this->twitterOauth->expects($this->once())
+        $this->oauth->expects($this->once())
                            ->method('get')
                            ->with('lists/subscriptions', array('p1' => '12', 'p2' => 32123));
         $this->client->getLists('subscribed', array('p1' => '12', 'p2' => 32123));
@@ -40,7 +45,7 @@ class TwitterClientTest extends \PHPUnit_Framework_TestCase
 
     public function testGetListMembers()
     {
-        $this->twitterOauth->expects($this->once())
+        $this->oauth->expects($this->once())
                            ->method('get')
                            ->with('lists/members', array('screen_name' => 'alice'));
         $this->client->getListMembers(array('screen_name' => 'alice'));
