@@ -12,7 +12,7 @@ $loader->add('Codense', __DIR__ . '/lib');
 
 class Config
 {
-    const OUTPUT_PATH = __DIR__ . '/output/';
+    const OUTPUT_PATH = './output/';
 
     // json or html
     const FORMAT = 'json';
